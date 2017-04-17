@@ -4,9 +4,11 @@
 #include "system_timetick.h"
 
 #include "uart_dma_timeout.h"
+#include "adc_dac.h"
 
 extern bool b_UART_DMA_Timeout;
 extern uint8_t rcv_message[BUFF_SIZE];
+extern uint16_t ADC1_Value[2];
 //char parse_message[BUFF_SIZE];
 
 void init_main(void);
@@ -72,4 +74,5 @@ void init_main(void)
   GPIO_Init(GPIOD, &GPIO_InitStructure);
 	
 	UART_DMA_Timeout_Init();
+	ADC_DMA_Init();
 }
