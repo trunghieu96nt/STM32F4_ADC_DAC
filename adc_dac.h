@@ -29,6 +29,7 @@
 
 /* Initialization and Configuration functions --------------------------------*/
 void ADC_DMA_Init(void);
+void DAC_NDMA_Init(void);
 
 /* Start & Stop function -------------------------------------------------------------*/
 

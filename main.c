@@ -9,7 +9,7 @@
 extern bool b_UART_DMA_Timeout;
 extern uint8_t rcv_message[BUFF_SIZE];
 extern uint16_t ADC1_Value[2];
-//char parse_message[BUFF_SIZE];
+char parse_message[BUFF_SIZE];
 
 void init_main(void);
 
@@ -48,6 +48,22 @@ int main(void)
 		{
 			if(b_UART_DMA_Timeout)
 			{
+				b_UART_DMA_Timeout = false;
+				if(strstr((char*) rcv_message, "[DAC"))
+				{
+					if(rcv_message[4] == '1')
+					{
+						strlcpy(parse_message,(char*) &rcv_message[6], strlen((char*) rcv_message) - 6);
+						DAC_SetChannel1Data(DAC_Align_12b_R, string2num(parse_message));
+						UART4_DMA_Send("[DONE]", strlen("[DONE]"));
+					}
+					else if(rcv_message[4] == '2')
+					{
+						strlcpy(parse_message,(char*) &rcv_message[6], strlen((char*) rcv_message) - 6);
+						DAC_SetChannel2Data(DAC_Align_12b_R, string2num(parse_message));
+						UART4_DMA_Send("[DONE]", strlen("[DONE]"));
+					}
+				}
 				if(!strcmp((char*) rcv_message, "[PD12_TOGGLE]"))
 				{
 					GPIO_ToggleBits(GPIOD, GPIO_Pin_12);
@@ -75,4 +91,5 @@ void init_main(void)
 	
 	UART_DMA_Timeout_Init();
 	ADC_DMA_Init();
+	DAC_NDMA_Init();
 }
